@@ -4,9 +4,11 @@ mod config;
 use cloudflare::*;
 use config::Config;
 
+use clap::{App, Arg};
 use anyhow::{Result, bail};
 use std::time::Duration;
 use redis::AsyncCommands;
+use std::ffi::OsStr;
 
 async fn update_record_ip(cf: &Cloudflare, zone_id: &str, record_name: &str, new_ip: &str) -> Result<()> {
     let mut records = cf.list_records(&zone_id, Some(record_name)).await?;
@@ -30,7 +32,20 @@ async fn get_current_record_content(cf: &Cloudflare, zone_id: &str, record_name:
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    let config = Config::from_file()?;
+    let args = App::new("aegisd")
+        .about("Cloudflare Intra DynDNS")
+        .arg(
+            Arg::new("config")
+                .short('c')
+                .long("config")
+                .takes_value(true)
+                .required(false)
+                .about("Path to the config file"),
+        )
+        .get_matches();
+    let config_path = args.value_of_os("config").map(OsStr::as_ref);
+
+    let config = Config::from_file(config_path)?;
     let mut redis_url = config.redis_host;
     if !redis_url.starts_with("redis://") {
         redis_url = "redis://".to_owned() + &redis_url;
