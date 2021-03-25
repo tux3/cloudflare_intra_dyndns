@@ -9,6 +9,7 @@ struct ConfigFile {
     pub cf_token: String,
     pub zone_name: String,
     pub record_name: String,
+    pub redis_host: String,
     pub redis_key: String,
     pub redis_poll_interval: Option<u64>,
 }
@@ -17,6 +18,7 @@ pub struct Config {
     pub cf_token: String,
     pub zone_name: String,
     pub record_name: String,
+    pub redis_host: String,
     pub redis_key: String,
     pub redis_poll_interval: u64,
 }
@@ -33,6 +35,7 @@ impl Config {
             cf_token: config.cf_token,
             zone_name: config.zone_name,
             record_name: config.record_name,
+            redis_host: config.redis_host,
             redis_key: config.redis_key,
             redis_poll_interval: config.redis_poll_interval.unwrap_or(DEFAULT_REDIS_POLL_INTERVAL),
     })

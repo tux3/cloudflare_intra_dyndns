@@ -31,11 +31,15 @@ async fn get_current_record_content(cf: &Cloudflare, zone_id: &str, record_name:
 #[tokio::main]
 async fn main() -> Result<()> {
     let config = Config::from_file()?;
+    let mut redis_url = config.redis_host;
+    if !redis_url.starts_with("redis://") {
+        redis_url = "redis://".to_owned() + &redis_url;
+    }
 
     let cf = Cloudflare::new(&config.cf_token)?;
     let zone_id = cf.zone_id(&config.zone_name).await?;
 
-    let redis_client = redis::Client::open("redis://127.0.0.1/")?;
+    let redis_client = redis::Client::open(redis_url)?;
     let mut redis = redis_client.get_async_connection().await?;
 
     let mut record_content = get_current_record_content(&cf, &zone_id, &config.record_name).await?;
