@@ -1,6 +1,6 @@
 ARG APP_NAME=cloudflare_intra_dyndns
 
-FROM rust:1.50 as builder
+FROM rust:1.61 as builder
 ARG APP_NAME
 
 # Prebuild deps layer
