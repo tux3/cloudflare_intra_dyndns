@@ -11,7 +11,7 @@ use redis::AsyncCommands;
 use std::ffi::OsStr;
 
 async fn update_record_ip(cf: &Cloudflare, zone_id: &str, record_name: &str, new_ip: &str) -> Result<()> {
-    let mut records = cf.list_records(&zone_id, Some(record_name)).await?;
+    let mut records = cf.list_records(zone_id, Some(record_name)).await?;
     if records.is_empty() {
         bail!("Failed to find record {}", record_name);
     }
@@ -22,7 +22,7 @@ async fn update_record_ip(cf: &Cloudflare, zone_id: &str, record_name: &str, new
 }
 
 async fn get_current_record_content(cf: &Cloudflare, zone_id: &str, record_name: &str) -> Result<String> {
-    let mut records = cf.list_records(&zone_id, Some(record_name)).await?;
+    let mut records = cf.list_records(zone_id, Some(record_name)).await?;
     if records.is_empty() {
         bail!("Failed to find DNS record {}", record_name);
     }
