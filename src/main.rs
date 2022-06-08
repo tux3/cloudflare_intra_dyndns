@@ -4,7 +4,7 @@ mod config;
 use cloudflare::*;
 use config::Config;
 
-use clap::{App, Arg};
+use clap::{Arg, Command};
 use anyhow::{Result, bail};
 use std::time::Duration;
 use redis::AsyncCommands;
@@ -32,7 +32,7 @@ async fn get_current_record_content(cf: &Cloudflare, zone_id: &str, record_name:
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    let args = App::new("aegisd")
+    let args = Command::new("aegisd")
         .about("Cloudflare Intra DynDNS")
         .arg(
             Arg::new("config")
@@ -40,7 +40,7 @@ async fn main() -> Result<()> {
                 .long("config")
                 .takes_value(true)
                 .required(false)
-                .about("Path to the config file"),
+                .help("Path to the config file"),
         )
         .get_matches();
     let config_path = args.value_of_os("config").map(OsStr::as_ref);
